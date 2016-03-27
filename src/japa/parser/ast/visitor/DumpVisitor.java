@@ -66,6 +66,7 @@ import japa.parser.ast.expr.IntegerLiteralExpr;
 import japa.parser.ast.expr.IntegerLiteralMinValueExpr;
 import japa.parser.ast.expr.LongLiteralExpr;
 import japa.parser.ast.expr.LongLiteralMinValueExpr;
+import japa.parser.ast.expr.MapLiteralCreationExpr;
 import japa.parser.ast.expr.MarkerAnnotationExpr;
 import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.MethodCallExpr;
@@ -112,6 +113,8 @@ import japa.parser.ast.type.WildcardType;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Julio Vilmar Gesser
@@ -197,6 +200,16 @@ public final class DumpVisitor implements VoidVisitor<Object> {
                     printer.print(", ");
                 }
             }
+            printer.print(">");
+        }
+    }
+    
+    private void printTypeArgsForMapLiteral(Class c1, Class c2) {
+    	if (c1 != null && c2 != null) {
+            printer.print("<");
+            printer.print(c1.getSimpleName());
+            printer.print(", ");
+            printer.print(c2.getSimpleName());
             printer.print(">");
         }
     }
@@ -743,6 +756,45 @@ public final class DumpVisitor implements VoidVisitor<Object> {
             printer.print("}");
         }
     }
+    
+    //added TODO
+    public void visit(MapLiteralCreationExpr n, Object arg) {
+    	 System.out.println("Visited map literal");
+
+    	 
+
+//         if (mapEntries != null) {
+//        	 System.out.println("size of map is " + mapEntries.keySet().size());
+//        	 System.out.println("class of key is " + classOfKey.getSimpleName());
+//        	 System.out.println("class of value is " + classOfValue.getSimpleName());
+//       }
+    	 
+    	 if (n.getScope() != null) {
+             n.getScope().accept(this, arg);
+             printer.print(".");
+         }
+
+         printer.print("new ");
+
+         n.getType().accept(this, arg);
+         printTypeArgs(n.getTypeArgs(), arg);
+     	 printMapTypeArguments(n);
+
+//         printTypeArgsForMapLiteral(classOfKey, classOfValue);
+
+
+         printer.print("(");
+         if (n.getArgs() != null) {
+             for (Iterator<Expression> i = n.getArgs().iterator(); i.hasNext();) {
+                 Expression e = i.next();
+                 e.accept(this, arg);
+                 if (i.hasNext()) {
+                     printer.print(", ");
+                 }
+             }
+         }
+         printer.print(")");
+    }
 
     public void visit(SuperMemberAccessExpr n, Object arg) {
         printer.print("super.");
@@ -908,12 +960,30 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
         printer.print(");");
     }
+    
+    //added helper method TODO
+    public void printMapTypeArguments(MapLiteralCreationExpr mapEx) {
+    	 Map<Object, Object> mapEntries = mapEx.getMapEntries();
+      	 Set<Object> keys = mapEntries.keySet();
+      	 Object firstKey = keys.iterator().next();
+      	 Object firstValue = mapEntries.get(firstKey);
+      	 Class classOfKey = firstKey.getClass();
+      	 Class classOfValue = firstValue.getClass();
+         printTypeArgsForMapLiteral(classOfKey, classOfValue);
+    }
 
     public void visit(VariableDeclarationExpr n, Object arg) {
         printAnnotations(n.getAnnotations(), arg);
         printModifiers(n.getModifiers());
 
         n.getType().accept(this, arg);
+        
+        //added TODO
+        Expression ex = n.getVars().get(0).getInit();
+        if (ex instanceof MapLiteralCreationExpr) {
+        	MapLiteralCreationExpr mapEx = (MapLiteralCreationExpr)ex;
+        	printMapTypeArguments(mapEx);
+        }
         printer.print(" ");
 
         for (Iterator<VariableDeclarator> i = n.getVars().iterator(); i.hasNext();) {

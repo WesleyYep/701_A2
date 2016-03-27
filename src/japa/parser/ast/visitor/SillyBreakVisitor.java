@@ -66,6 +66,7 @@ import japa.parser.ast.expr.IntegerLiteralExpr;
 import japa.parser.ast.expr.IntegerLiteralMinValueExpr;
 import japa.parser.ast.expr.LongLiteralExpr;
 import japa.parser.ast.expr.LongLiteralMinValueExpr;
+import japa.parser.ast.expr.MapLiteralCreationExpr;
 import japa.parser.ast.expr.MarkerAnnotationExpr;
 import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.MethodCallExpr;
@@ -216,10 +217,11 @@ public final class SillyBreakVisitor implements VoidVisitor<Object> {
             printer.print(">");
         }
     }
-
+   
     public void visit(Node n, Object arg) {
         throw new IllegalStateException(n.getClass().getName());
     }
+    
 
     public void visit(CompilationUnit n, Object arg) {
         if (n.getPakage() != null) {
@@ -746,6 +748,11 @@ public final class SillyBreakVisitor implements VoidVisitor<Object> {
         }
     }
 
+    //added
+    public void visit(MapLiteralCreationExpr n, Object arg) {
+    	 System.out.println("Visited map literal");
+    }
+    
     public void visit(SuperMemberAccessExpr n, Object arg) {
         printer.print("super.");
         printer.print(n.getName());

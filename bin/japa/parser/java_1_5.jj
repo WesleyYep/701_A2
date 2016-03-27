@@ -2300,6 +2300,7 @@ Expression AllocationExpression(Expression scope):
 	Object[] arr = null;
 	List typeArgs = null;
 	List anonymousBody = null;
+	Map mapEntries = null; //added this
 	List args;
 	int line;
 	int column;
@@ -2331,19 +2332,24 @@ Expression AllocationExpression(Expression scope):
 	      args = Arguments() [ LOOKAHEAD(2) anonymousBody = ClassOrInterfaceBody(false) ]
 	      { ret = new ObjectCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, args, anonymousBody); }
       	| //added this
-	      //"{" (< STRING_LITERAL > ":" < STRING_LITERAL >) ("," < STRING_LITERAL > ":" < STRING_LITERAL >)* "}"
-	      MapLiteral()
-	      { ret = new ObjectCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, null, anonymousBody); }
+	      mapEntries = MapLiteral()
+	      { ret = new MapLiteralCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, null, mapEntries); }
 	    )
   )
   { return ret; }
 }
 
 //added this
-void MapLiteral():
-{}
+Map MapLiteral():
 {
-	"{" (< STRING_LITERAL > ":" < STRING_LITERAL >) ("," < STRING_LITERAL > ":" < STRING_LITERAL >)* "}"
+	Map ret = new HashMap();
+	String key;
+}
+{
+	"{" 
+	(< STRING_LITERAL > { key = token.image; } ":" < STRING_LITERAL > { ret.put(key, token.image); })
+	 ("," < STRING_LITERAL > { key = token.image; } ":" < STRING_LITERAL > { ret.put(key, token.image); })* "}"
+	{ return ret; }
 }
 
 /*

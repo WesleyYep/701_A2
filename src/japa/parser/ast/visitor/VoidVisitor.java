@@ -61,6 +61,7 @@ import japa.parser.ast.expr.IntegerLiteralExpr;
 import japa.parser.ast.expr.IntegerLiteralMinValueExpr;
 import japa.parser.ast.expr.LongLiteralExpr;
 import japa.parser.ast.expr.LongLiteralMinValueExpr;
+import japa.parser.ast.expr.MapLiteralCreationExpr;
 import japa.parser.ast.expr.MarkerAnnotationExpr;
 import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.MethodCallExpr;
@@ -215,6 +216,9 @@ public interface VoidVisitor<A> {
     public void visit(NameExpr n, A arg);
 
     public void visit(ObjectCreationExpr n, A arg);
+    
+    //added
+    public void visit(MapLiteralCreationExpr n, A arg);
 
     public void visit(QualifiedNameExpr n, A arg);
 
