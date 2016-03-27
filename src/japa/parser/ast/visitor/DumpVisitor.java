@@ -759,16 +759,6 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     
     //added TODO
     public void visit(MapLiteralCreationExpr n, Object arg) {
-    	 System.out.println("Visited map literal");
-
-    	 
-
-//         if (mapEntries != null) {
-//        	 System.out.println("size of map is " + mapEntries.keySet().size());
-//        	 System.out.println("class of key is " + classOfKey.getSimpleName());
-//        	 System.out.println("class of value is " + classOfValue.getSimpleName());
-//       }
-    	 
     	 if (n.getScope() != null) {
              n.getScope().accept(this, arg);
              printer.print(".");
@@ -778,10 +768,9 @@ public final class DumpVisitor implements VoidVisitor<Object> {
 
          n.getType().accept(this, arg);
          printTypeArgs(n.getTypeArgs(), arg);
+         
+         //added
      	 printMapTypeArguments(n);
-
-//         printTypeArgsForMapLiteral(classOfKey, classOfValue);
-
 
          printer.print("(");
          if (n.getArgs() != null) {
@@ -1036,6 +1025,21 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     public void visit(ExpressionStmt n, Object arg) {
         n.getExpression().accept(this, arg);
         printer.print(";");
+        
+        //print the extra Map.put statements if the expression is a MapLiteral TODO
+        if (n.getExpression() instanceof VariableDeclarationExpr) {
+        	VariableDeclarationExpr variableDeclarationExpr = (VariableDeclarationExpr) n.getExpression();
+        	Expression ex = variableDeclarationExpr.getVars().get(0).getInit();
+        	if (ex instanceof MapLiteralCreationExpr) {
+        		MapLiteralCreationExpr mapLiteralCreationExpr = (MapLiteralCreationExpr) ex;
+        		printer.printLn();
+        		Map<Object, Object> map =  mapLiteralCreationExpr.getMapEntries();
+        		Set<Object> set = map.keySet();
+        		for (Object o : set) {
+        			printer.printLn("states.put(" + o + ", " + map.get(o) + ");");
+        		}
+        	}
+        }
     }
 
     public void visit(SwitchStmt n, Object arg) {
