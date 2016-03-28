@@ -2332,24 +2332,31 @@ Expression AllocationExpression(Expression scope):
 	      args = Arguments() [ LOOKAHEAD(2) anonymousBody = ClassOrInterfaceBody(false) ]
 	      { ret = new ObjectCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, args, anonymousBody); }
       	| //added this
-	      mapEntries = MapLiteral()
-	      { ret = new MapLiteralCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, null, mapEntries); }
+	      ret = MapLiteral(line, column, scope, type)
+	      //{ ret = new MapLiteralCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, null, mapEntries); }
 	    )
   )
   { return ret; }
 }
 
 //added this
-Map MapLiteral():
+MapLiteralCreationExpr MapLiteral(int line, int column, Expression scope, Type type):
 {
-	Map ret = new HashMap();
+	MapLiteralCreationExpr ret = null;
+	Map map = new HashMap();
 	String key;
+	Expression keyLit;
+	Expression valueLit;
 }
 {
 	"{" 
-	(< STRING_LITERAL > { key = token.image; } ":" < STRING_LITERAL > { ret.put(key, token.image); })
-	 ("," < STRING_LITERAL > { key = token.image; } ":" < STRING_LITERAL > { ret.put(key, token.image); })* "}"
-	{ return ret; }
+	(keyLit = Literal() { key = token.image; } ":" valueLit = Literal() { map.put(key, token.image); })
+	 ("," keyLit = Literal() { key = token.image; } ":" valueLit = Literal() { map.put(key, token.image); })* "}"
+	{ 
+		Class keyClass = keyLit.getClass();		Class valueClass = valueLit.getClass();
+		ret = new MapLiteralCreationExpr(line, column, scope, (ClassOrInterfaceType) type, map, keyClass, valueClass);
+		return ret;
+	}
 }
 
 /*

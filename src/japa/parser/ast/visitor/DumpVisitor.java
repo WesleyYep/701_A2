@@ -763,26 +763,11 @@ public final class DumpVisitor implements VoidVisitor<Object> {
              n.getScope().accept(this, arg);
              printer.print(".");
          }
-
          printer.print("new ");
-
          n.getType().accept(this, arg);
-         printTypeArgs(n.getTypeArgs(), arg);
-         
          //added
      	 printMapTypeArguments(n);
-
-         printer.print("(");
-         if (n.getArgs() != null) {
-             for (Iterator<Expression> i = n.getArgs().iterator(); i.hasNext();) {
-                 Expression e = i.next();
-                 e.accept(this, arg);
-                 if (i.hasNext()) {
-                     printer.print(", ");
-                 }
-             }
-         }
-         printer.print(")");
+         printer.print("()");
     }
 
     public void visit(SuperMemberAccessExpr n, Object arg) {
@@ -952,16 +937,30 @@ public final class DumpVisitor implements VoidVisitor<Object> {
     
     //added helper method TODO
     public void printMapTypeArguments(MapLiteralCreationExpr mapEx) {
-    	 Map<Object, Object> mapEntries = mapEx.getMapEntries();
+    	 Map mapEntries = mapEx.getMapEntries();
       	 Set<Object> keys = mapEntries.keySet();
-      	 Object firstKey = keys.iterator().next();
-      	 Object firstValue = mapEntries.get(firstKey);
-      	 Class classOfKey = firstKey.getClass();
-      	 Class classOfValue = firstValue.getClass();
+      	 Class classOfKey = getBasicClass(mapEx.getKeyClass());
+      	 Class classOfValue = getBasicClass(mapEx.getValueClass());
          printTypeArgsForMapLiteral(classOfKey, classOfValue);
     }
 
-    public void visit(VariableDeclarationExpr n, Object arg) {
+    private Class getBasicClass(Class keyClass) {
+		if (keyClass == IntegerLiteralExpr.class) {
+			return Integer.class;
+		} else if (keyClass == LongLiteralExpr.class) {
+			return Long.class;
+		} else if (keyClass == DoubleLiteralExpr.class) {
+			return Double.class;
+		} else if (keyClass == CharLiteralExpr.class) {
+			return Character.class;
+		} else if (keyClass == BooleanLiteralExpr.class) {
+			return Boolean.class;
+		} else {
+			return String.class;
+		}
+	}
+
+	public void visit(VariableDeclarationExpr n, Object arg) {
         printAnnotations(n.getAnnotations(), arg);
         printModifiers(n.getModifiers());
 

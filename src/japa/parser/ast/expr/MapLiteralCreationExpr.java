@@ -39,19 +39,17 @@ public final class MapLiteralCreationExpr extends Expression {
 
     private final ClassOrInterfaceType type;
 
-    private final List<Type> typeArgs;
-
-    private final List<Expression> args;
-
     private final Map<Object, Object> mapEntries;
+    private final Class keyClass;
+    private final Class valueClass;
 
-    public MapLiteralCreationExpr(int line, int column, Expression scope, ClassOrInterfaceType type, List<Type> typeArgs, List<Expression> args, Map<Object, Object> mapEntries) {
+    public MapLiteralCreationExpr(int line, int column, Expression scope, ClassOrInterfaceType type, Map<Object, Object> mapEntries, Class keyClass, Class valueClass) {
         super(line, column);
         this.scope = scope;
         this.type = type;
-        this.typeArgs = typeArgs;
-        this.args = args;
         this.mapEntries = mapEntries;
+        this.keyClass = keyClass;
+        this.valueClass = valueClass;
     }
 
     public Expression getScope() {
@@ -62,16 +60,16 @@ public final class MapLiteralCreationExpr extends Expression {
         return type;
     }
 
-    public List<Type> getTypeArgs() {
-        return typeArgs;
-    }
-
-    public List<Expression> getArgs() {
-        return args;
-    }
-
     public Map<Object, Object> getMapEntries() {
         return mapEntries;
+    }
+    
+    public Class getKeyClass() {
+    	return keyClass;
+    }
+    
+    public Class getValueClass() {
+    	return valueClass;
     }
 
     @Override

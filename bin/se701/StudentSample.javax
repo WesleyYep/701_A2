@@ -12,10 +12,10 @@ public class StudentSample {
 
  	public static void sampleMethod() {
 		Map states = new HashMap {
-		    "AL" : "Alabama",
-		    "AK" : "Alaska",
-		    "AZ" : "Arizona", 
-		    "WY" : "Wyoming"
+		    false : 'c',
+		    213 : 's',
+		    21234 : 's', 
+		    523 : 'f'
 		}; 
 	 		
 		for(Entry<String, String> state : states.entrySet()){
