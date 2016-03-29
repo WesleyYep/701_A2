@@ -5,6 +5,6 @@ public class Test2 {
     }
 
     public void bar() {
-        int b = 456;
+        int b = f;
     }
 }

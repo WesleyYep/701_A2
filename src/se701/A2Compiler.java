@@ -10,6 +10,7 @@ import japa.parser.ParseException;
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.visitor.SillyBreakVisitor;
 import japa.parser.ast.visitor.DumpVisitor;
+import japa.parser.ast.visitor.SemanticsVisitor;
 
 public class A2Compiler {
 	
@@ -23,7 +24,8 @@ public class A2Compiler {
 		CompilationUnit ast = parser.CompilationUnit();
 		
 		// perform visit 1...
-		SillyBreakVisitor semanticsVisitor = new SillyBreakVisitor();
+		//SillyBreakVisitor semanticsVisitor = new SillyBreakVisitor();
+		SemanticsVisitor semanticsVisitor = new SemanticsVisitor();
 		ast.accept(semanticsVisitor, null);
 		
 		// perform visit 2... etc etc 

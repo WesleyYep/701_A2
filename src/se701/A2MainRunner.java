@@ -41,6 +41,7 @@ public class A2MainRunner {
 			e.printStackTrace();
 		} catch (A2SemanticsException e) {
 			System.err.println("Sample file has semantic exception! ");
+			e.printStackTrace();
 		}  catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
