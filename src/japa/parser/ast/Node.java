@@ -21,6 +21,7 @@
  */
 package japa.parser.ast;
 
+import symtab.Scope;
 import japa.parser.ast.visitor.DumpVisitor;
 import japa.parser.ast.visitor.GenericVisitor;
 import japa.parser.ast.visitor.VoidVisitor;
@@ -37,6 +38,8 @@ public abstract class Node {
     private final int endLine;
 
     private final int endColumn;
+	protected Scope currentScope;
+
 
     /**
      * This attribute can store additional information from semantic analysis.
@@ -102,5 +105,13 @@ public abstract class Node {
         accept(visitor, null);
         return visitor.getSource();
     }
+    
+	public void setCurrentScope(Scope currentScope) {
+		this.currentScope = currentScope;
+	}
+	
+	public Scope getCurrentScope() {
+		return currentScope;
+	}
 
 }

@@ -2,14 +2,21 @@ package symtab;
 
 public class BaseScope implements Scope  {
 
+	protected Scope scope;
+	
+	public BaseScope(Scope scope) {
+		this.scope = scope;
+	}
+
+	
 	@Override
 	public String getScopeName() {
-		return null;
+		return scope.getScopeName();
 	}
 
 	@Override
 	public Scope getEnclosingScope() {
-		return null;
+		return scope;
 	}
 
 	@Override

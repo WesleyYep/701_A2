@@ -12,10 +12,10 @@ public class StudentSample {
 
     public static void sampleMethod() {
         Map<Integer, Character> states = new HashMap<Integer, Character>();
+        states.put(34, 'c');
         states.put(21234, 's');
         states.put(213, 's');
         states.put(523, 'f');
-        states.put(false, 'c');
 
         for (Entry<String, String> state : states.entrySet()) {
             System.out.println(state.getKey() + " " + state.getValue());

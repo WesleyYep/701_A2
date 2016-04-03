@@ -17,4 +17,5 @@ public abstract class Symbol {
 	public Type getType(){
 		return type;
 	}
+	
 }
