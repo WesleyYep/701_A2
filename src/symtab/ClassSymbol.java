@@ -6,4 +6,8 @@ public class ClassSymbol extends ScopedSymbol implements Type {
 		super(name, null);
 	}
 
+	public ClassSymbol(String name, Scope currentScope) {
+		super(name, currentScope);
+	}
+
 }

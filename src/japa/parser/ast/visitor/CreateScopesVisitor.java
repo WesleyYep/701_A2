@@ -199,7 +199,7 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(NameExpr n, Object arg) {
-
+    	n.setCurrentScope(currentScope);
     }
 
     public void visit(QualifiedNameExpr n, Object arg) {
@@ -214,9 +214,9 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
         if (n.getJavaDoc() != null) {
             n.getJavaDoc().accept(this, arg);
         }
-        currentScope = new ClassSymbol(n.getName());
+        currentScope = new ClassSymbol(n.getName(), currentScope); //push
 		// set scope into Node
-		n.setCurrentScope(currentScope);
+		n.setCurrentScope(currentScope); //stash
 
         printMemberAnnotations(n.getAnnotations(), arg);
         printTypeParameters(n.getTypeParameters(), arg);
@@ -237,6 +237,7 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
         if (n.getMembers() != null) {
             printMembers(n.getMembers(), arg);
         }
+        currentScope = currentScope.getEnclosingScope(); //pop
     }
 
     public void visit(EmptyTypeDeclaration n, Object arg) {
@@ -336,6 +337,7 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(AssignExpr n, Object arg) {
+    	n.setCurrentScope(currentScope);
         n.getTarget().accept(this, arg);
         n.getValue().accept(this, arg);
     }
@@ -688,8 +690,12 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
 
     public void visit(ForeachStmt n, Object arg) {
     //    n.getVariable().accept(this, arg);
+        currentScope = new LocalScope(currentScope); //push
+        n.setCurrentScope(currentScope); //stash
+        n.getVariable().accept(this, arg);
         n.getIterable().accept(this, arg);
         n.getBody().accept(this, arg);
+        currentScope = currentScope.getEnclosingScope(); //pop
     }
 
     public void visit(ForStmt n, Object arg) {

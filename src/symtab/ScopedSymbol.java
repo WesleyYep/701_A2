@@ -52,9 +52,15 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 			return s;
 		
 		// otherwise look in the enclosing scope, if there is one
-		if (enclosingScope != null)
-			return enclosingScope.resolve(name);
-		
+		Scope sc = enclosingScope;
+		boolean isContained = false;
+		while (sc != null) {
+			Symbol sym = enclosingScope.resolve(name);
+			if (sym != null) {
+				return sym;
+			}
+			sc = sc.getEnclosingScope();
+		}
 		// otherwise it doesn't exist
 		return null;
 	}

@@ -1,15 +1,20 @@
 public class Test1 {
 	int a;
-	char b;
 	
 	public void foo(boolean x) {
-		a = false;  // ERROR: incompatible types
-		lkol = "asd";
+	//	a = false;  // ERROR: incompatible types
+		a = 6;
+	//	lkol = "asd";
 		boolean d = true;
+	//	long before = c;
 		long c = 5;
 		long f = c;
+		char beforeChar = b;
 		//break;
 		String k = null;
 		boolean asd;
 	}
+	
+	char b;
+	
 }

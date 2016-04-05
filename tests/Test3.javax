@@ -12,6 +12,7 @@ public class Test3 {
 	public void foo(boolean x) {
 	    Dog d = new Dog();
 		int e = 1;
+		int as = a;
 //		int e = 1; 		// ERROR, already defined
 //		int f = "";		// ERROR, incompatible type
 		int g = e; 		
