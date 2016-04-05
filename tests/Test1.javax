@@ -4,9 +4,9 @@ public class Test1 {
 	public void foo(boolean x) {
 	//	a = false;  // ERROR: incompatible types
 		a = 6;
-	//	lkol = "asd";
+	//	lol = "asd";
 		boolean d = true;
-	//	long before = c;
+		long before = c; //ERROR
 		long c = 5;
 		long f = c;
 		char beforeChar = b;

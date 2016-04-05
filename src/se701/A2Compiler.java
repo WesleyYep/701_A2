@@ -11,6 +11,7 @@ import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.visitor.SillyBreakVisitor;
 import japa.parser.ast.visitor.CreateScopesVisitor;
 import japa.parser.ast.visitor.DumpVisitor;
+import japa.parser.ast.visitor.ResolvingVisitor;
 import japa.parser.ast.visitor.DefinitionVisitor;
 
 public class A2Compiler {
@@ -29,8 +30,11 @@ public class A2Compiler {
 		CreateScopesVisitor createScopesVisitor = new 		CreateScopesVisitor();
 		ast.accept(createScopesVisitor, null);
 		
-		DefinitionVisitor semanticsVisitor = new DefinitionVisitor();
-		ast.accept(semanticsVisitor, null);
+		DefinitionVisitor definitionVisitor = new DefinitionVisitor();
+		ast.accept(definitionVisitor, null);
+		
+		ResolvingVisitor resolvingVisitor = new ResolvingVisitor();
+		ast.accept(resolvingVisitor, null);
 		
 		// perform visit 2... etc etc 
 		// ...
