@@ -519,6 +519,7 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(Parameter n, Object arg) {
+    	n.setCurrentScope(currentScope);
         printAnnotations(n.getAnnotations(), arg);
         n.getType().accept(this, arg);
         n.getId().accept(this, arg);

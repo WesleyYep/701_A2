@@ -299,7 +299,6 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         for (Iterator<VariableDeclarator> i = n.getVariables().iterator(); i.hasNext();) {
             VariableDeclarator v = i.next();
             v.accept(this, arg);
-            Symbol variable = n.getCurrentScope().resolve(v.getId().toString());
             
             symtab.Type typeOfLeft = (symtab.Type)symOfVariable;
             symtab.Type typeOfRight = getTypeOfExpression(n, v.getInit());
@@ -307,9 +306,7 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
 	            if(!isValidFor(typeOfRight, typeOfLeft)){
 	        		throw new A2SemanticsException("Cannot convert from " + typeOfRight.getName() + " to " + typeOfLeft.getName() + " on line " + n.getType().getBeginLine());
 	            }
-            }
-            
-            VariableSymbol varSym = new VariableSymbol(v.getId().getName(), (symtab.Type)symOfVariable );
+            }            
         }
     }
     
@@ -635,6 +632,9 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     			if(!(sym.getType() instanceof symtab.Type)){
     				throw new A2SemanticsException(init + " is not valid on line " + init.getBeginLine());
     			}
+    			if (sym.getLineNumber() > n.getBeginLine()) {
+    				throw new A2SemanticsException(sym.getName() + " is not defined on line " + init.getBeginLine());
+    			}
     			type = sym.getType();
     		}else{
     			//NOTE: IntegerLiteralExpr extends StringLiteralExpr, so must check IntegerLiteralExpr first
@@ -661,7 +661,11 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     			}
     			//TODO other primitive types (and others?)
     			else if (init.getClass() == ObjectCreationExpr.class) {
-    				sym = n.getCurrentScope().resolve(init.toString());
+    				String t = ((ObjectCreationExpr) init).getType().getName();
+    				sym = n.getCurrentScope().resolve(t);
+        			if(sym == null){
+        				throw new A2SemanticsException(t + " is not defined on line " + init.getBeginLine());
+        			}
     			}
     			else{
     				System.out.println("Add " + init.getClass() + " to getTypeofExpression helper method");

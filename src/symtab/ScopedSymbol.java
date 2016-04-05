@@ -10,7 +10,7 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 	protected Scope enclosingScope = null;
 	
 	public ScopedSymbol(String name, Scope enclosingScope) {
-		super(name, null);
+		super(name, null, 0); //scoped symbols are valid anywhere in the scope
 		this.enclosingScope = enclosingScope;
 		define(new BuiltInTypeSymbol("int"));
 		define(new BuiltInTypeSymbol("String"));
@@ -23,6 +23,7 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 		//map type for feature
 		define(new BuiltInTypeSymbol("Map"));
 		define(new BuiltInTypeSymbol("Entry"));
+		define(new BuiltInTypeSymbol("String[]"));
 	}
 	
 	@Override
@@ -53,7 +54,6 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 		
 		// otherwise look in the enclosing scope, if there is one
 		Scope sc = enclosingScope;
-		boolean isContained = false;
 		while (sc != null) {
 			Symbol sym = enclosingScope.resolve(name);
 			if (sym != null) {

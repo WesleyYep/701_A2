@@ -23,6 +23,7 @@ public abstract class BaseScope implements Scope {
 		define(new BuiltInTypeSymbol("Map"));
 		define(new BuiltInTypeSymbol("Entry"));
 		define(new BuiltInTypeSymbol("System"));
+		define(new BuiltInTypeSymbol("String[]"));
 
 	}
 	
@@ -54,7 +55,6 @@ public abstract class BaseScope implements Scope {
 		
 		// otherwise look in the enclosing scope, if there is one
 		Scope sc = enclosingScope;
-		boolean isContained = false;
 		while (sc != null) {
 			Symbol sym = enclosingScope.resolve(name);
 			if (sym != null) {

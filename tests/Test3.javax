@@ -11,13 +11,21 @@ public class Test3 {
 	
 	public void foo(boolean x) {
 	    Dog d = new Dog();
+//	    Dog d1 = new Dogs();
+//		Dog s = 1;
+//		Sheep s = new Dog();	
 		int e = 1;
-		int as = a;
-//		int e = 1; 		// ERROR, already defined
+//		int as = a;
+//		int e = 1; 			// ERROR, already defined
+//		String a = "asd"; 	// ERROR, already defined
 //		int f = "";		// ERROR, incompatible type
 		int g = e; 		
 //		int h = i;	// ERROR, not defined
-//		int j = Dog; // ERROR , invalid
-		boolean x = false;
+//		int j = new Dog(); // ERROR , invalid
+		boolean xx = false;
 	}
+	
+//	public void foo(boolean x) {
+//
+//	}
 }
