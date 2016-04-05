@@ -113,6 +113,7 @@ import japa.parser.ast.type.WildcardType;
 import se701.A2SemanticsException;
 import symtab.ClassSymbol;
 import symtab.GlobalScope;
+import symtab.Scope;
 import symtab.Symbol;
 import symtab.VariableSymbol;
 
@@ -666,6 +667,19 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         			if(sym == null){
         				throw new A2SemanticsException(t + " is not defined on line " + init.getBeginLine());
         			}
+    			}
+    			else if (init.getClass() == FieldAccessExpr.class) {
+    				String t = ((FieldAccessExpr) init).getScope().toString();
+    				sym = n.getCurrentScope().resolve(t);
+        			if(sym == null){
+        				throw new A2SemanticsException(t + " is not defined on line " + init.getBeginLine());
+        			}
+        			Scope sss = (Scope)sym.getType();
+        			sym = sss.resolve(((FieldAccessExpr) init).getField());
+        			if(sym == null){
+        				throw new A2SemanticsException(((FieldAccessExpr) init).getField() + " is not defined on line " + init.getBeginLine());
+        			}
+        			sym = (Symbol) sym.getType();
     			}
     			else{
     				System.out.println("Add " + init.getClass() + " to getTypeofExpression helper method");

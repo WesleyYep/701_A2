@@ -7,10 +7,14 @@ public class Test3 {
 //	int b = "";		// ERROR, incompatible types
 //	int c = d; 		// ERROR, not defined
 	
-	class Dog {}
+	class Dog {
+		int y;
+	}
 	
 	public void foo(boolean x) {
 	    Dog d = new Dog();
+//	   	    Dog d = new Dog();
+	    
 //	    Dog d1 = new Dogs();
 //		Dog s = 1;
 //		Sheep s = new Dog();	
@@ -23,6 +27,7 @@ public class Test3 {
 //		int h = i;	// ERROR, not defined
 //		int j = new Dog(); // ERROR , invalid
 		boolean xx = false;
+		int doga = d.y;
 	}
 	
 //	public void foo(boolean x) {

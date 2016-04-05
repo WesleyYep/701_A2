@@ -5,6 +5,8 @@ public class Test3 {
     int a = 1;
 
     class Dog {
+
+        int y;
     }
 
     public void foo(boolean x) {
@@ -12,5 +14,6 @@ public class Test3 {
         int e = 1;
         int g = e;
         boolean xx = false;
+        int doga = d.y;
     }
 }

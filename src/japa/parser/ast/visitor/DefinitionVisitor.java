@@ -212,9 +212,9 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
             n.getJavaDoc().accept(this, arg);
         }
         if (n.getCurrentScope().getEnclosingScope() != null) {
-        	n.getCurrentScope().getEnclosingScope().define(new ClassSymbol(n.getName())); //if it's a subclass, define it in the class above
+        	n.getCurrentScope().getEnclosingScope().define((ClassSymbol)n.getCurrentScope()); //if it's a subclass, define it in the class above
         } else {
-        	n.getCurrentScope().define(new ClassSymbol(n.getName()));
+        	n.getCurrentScope().define((ClassSymbol)n.getCurrentScope());
         }
         printMemberAnnotations(n.getAnnotations(), arg);
         printTypeParameters(n.getTypeParameters(), arg);
