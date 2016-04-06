@@ -7,6 +7,11 @@ public class Test3 {
     class Dog {
 
         int y;
+
+        public void dogFoo(boolean x) {
+        }
+
+        char x;
     }
 
     public void foo(boolean x) {
@@ -15,5 +20,6 @@ public class Test3 {
         int g = e;
         boolean xx = false;
         int doga = d.y;
+        int f = d.dogFoo();
     }
 }

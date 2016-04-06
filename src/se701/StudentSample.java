@@ -17,7 +17,16 @@ public class StudentSample {
         states.put(213, 's');
         states.put(523, 'f');
 
-        for (Entry<String, String> state : states.entrySet()) {
+        for (Entry<Integer, Character> state : states.entrySet()) {
+            System.out.println(state.getKey() + " " + state.getValue());
+        }
+        Map<String, String> moreStates = new HashMap<String, String>();
+        moreStates.put("AL", "Alabama");
+        moreStates.put("AK", "Alaska");
+        moreStates.put("AZ", "Arizona");
+        moreStates.put("WY", "Wyoming");
+
+        for (Entry<String, String> state : moreStates.entrySet()) {
             System.out.println(state.getKey() + " " + state.getValue());
         }
     }

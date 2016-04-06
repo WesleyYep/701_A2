@@ -113,6 +113,7 @@ import japa.parser.ast.type.WildcardType;
 import se701.A2SemanticsException;
 import symtab.ClassSymbol;
 import symtab.GlobalScope;
+import symtab.MethodSymbol;
 import symtab.Scope;
 import symtab.Symbol;
 import symtab.VariableSymbol;
@@ -462,7 +463,31 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
             n.getScope().accept(this, arg);
         }
         printTypeArgs(n.getTypeArgs(), arg);
-
+        Scope className = null;
+        if (n.getScope() != null) {
+        	String t = n.getScope().toString();
+			Symbol sym = n.getCurrentScope().resolve(t);
+			if(sym == null){
+				throw new A2SemanticsException(t + " is not defined on line " + n.getBeginLine());
+			}
+			if (sym.getType() instanceof Scope) {
+				className = (Scope)sym.getType();
+				if(className == null){
+					throw new A2SemanticsException("Unknown method on line " + n.getBeginLine());
+				}
+			}
+        } else {
+        	className = n.getCurrentScope();
+        }
+        if (className != null) {
+			Symbol sym = className.resolve(n.getName());
+			if(sym == null){
+				throw new A2SemanticsException(n.getName() + "() is not defined on line " + n.getBeginLine());
+			} else if (sym instanceof VariableSymbol) {
+				throw new A2SemanticsException(n.getName()+ " is a variable but used as a method on line " + n.getBeginLine());
+			}
+        }
+		
         if (n.getArgs() != null) {
             for (Iterator<Expression> i = n.getArgs().iterator(); i.hasNext();) {
                 Expression e = i.next();
@@ -554,6 +579,13 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(Parameter n, Object arg) {
+    	Symbol symOfVariable = n.getCurrentScope().resolve(n.getType().toString());
+        if(symOfVariable == null){
+        	throw new A2SemanticsException(n.getType().toString() + " on line " + n.getType().getBeginLine() + " is not a defined type");
+        }
+        if(!(symOfVariable instanceof symtab.Type)){
+        	throw new A2SemanticsException(n.getType().toString() + " on line " + n.getType().getBeginLine() + " is not a valid type");
+        }
         printAnnotations(n.getAnnotations(), arg);
         n.getType().accept(this, arg);
         n.getId().accept(this, arg);
@@ -678,6 +710,25 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         			sym = sss.resolve(((FieldAccessExpr) init).getField());
         			if(sym == null){
         				throw new A2SemanticsException(((FieldAccessExpr) init).getField() + " is not defined on line " + init.getBeginLine());
+        			} else if (sym instanceof MethodSymbol) {
+        				throw new A2SemanticsException(((FieldAccessExpr) init).getField() + " is a method but used as a field on line " + init.getBeginLine());
+        			}
+        			sym = (Symbol) sym.getType();
+    			} else if (init.getClass() == MethodCallExpr.class) {
+    				String t = ((MethodCallExpr) init).getScope().toString();
+    				sym = n.getCurrentScope().resolve(t);
+        			if(sym == null){
+        				throw new A2SemanticsException(t + " is not defined on line " + init.getBeginLine());
+        			}
+        			Scope className = (Scope)sym.getType();
+        			if(className == null){
+        				throw new A2SemanticsException("Unknown method on line " + init.getBeginLine());
+        			}
+        			sym = className.resolve(((MethodCallExpr) init).getName());
+        			if(sym == null){
+        				throw new A2SemanticsException(((MethodCallExpr) init).getName() + "() is not defined on line " + init.getBeginLine());
+        			} else if (sym instanceof VariableSymbol) {
+        				throw new A2SemanticsException(((MethodCallExpr) init).getName()+ " is a variable but used as a method on line " + init.getBeginLine());
         			}
         			sym = (Symbol) sym.getType();
     			}
@@ -832,6 +883,17 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(ForeachStmt n, Object arg) {
+    	Expression e = n.getIterable();
+    	if (e instanceof MethodCallExpr && ((MethodCallExpr)e).getName().equals("entrySet")) {
+    		List<Type> types = ((ClassOrInterfaceType)((ReferenceType)n.getVariable().getType()).getType()).getTypeArgs();
+    		Symbol t = n.getCurrentScope().resolve(((MethodCallExpr)n.getIterable()).getScope().toString());
+    		String[] typeStrings = t.getType().getName().split(",");
+    		if (!types.get(0).toString().equals(typeStrings[0])) {
+				throw new A2SemanticsException(("Type " + types.get(0) + " does not match Type " + typeStrings[0] + " on line " + n.getBeginLine()));
+    		} else if (!types.get(1).toString().equals(typeStrings[1])) {
+				throw new A2SemanticsException(("Type " + types.get(1) + " does not match Type " + typeStrings[1] + " on line " + n.getBeginLine()));
+    		}
+    	}
         n.getVariable().accept(this, arg);
         n.getIterable().accept(this, arg);
         n.getBody().accept(this, arg);

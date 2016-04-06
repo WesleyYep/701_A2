@@ -18,7 +18,18 @@ public class StudentSample {
 		    523 : 'f'
 		}; 
 	 		
-		for(Entry<String, String> state : states.entrySet()){
+		for(Entry<Integer, Character> state : states.entrySet()){
+			System.out.println(state.getKey() + " " + state.getValue());
+		}
+		
+		Map moreStates = new HashMap {
+		    "AL" : "Alabama",
+		    "AK" : "Alaska",
+		    "AZ" : "Arizona", 
+		    "WY" : "Wyoming"
+		}; 
+	 		
+		for(Entry<String, String> state : moreStates.entrySet()){
 			System.out.println(state.getKey() + " " + state.getValue());
 		}
 	}

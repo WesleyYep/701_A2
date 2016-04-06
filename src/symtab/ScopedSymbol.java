@@ -23,6 +23,8 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 		//map type for feature
 		define(new BuiltInTypeSymbol("Map"));
 		define(new BuiltInTypeSymbol("Entry"));
+		define(new BuiltInTypeSymbol("System"));
+		define(new BuiltInTypeSymbol("System.out"));
 		define(new BuiltInTypeSymbol("String[]"));
 	}
 	

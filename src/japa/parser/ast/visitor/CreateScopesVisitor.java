@@ -186,11 +186,17 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
                 i.accept(this, arg);
             }
         }
+        
+        currentScope = new ClassSymbol("CompilationUnit", currentScope); //push
+		// set scope into Node
+		n.setCurrentScope(currentScope); //stash
+		
         if (n.getTypes() != null) {
             for (Iterator<TypeDeclaration> i = n.getTypes().iterator(); i.hasNext();) {
                 i.next().accept(this, arg);
             }
         }
+        n.setCurrentScope(currentScope.getEnclosingScope());
     }
 
     public void visit(PackageDeclaration n, Object arg) {
@@ -415,6 +421,7 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(MethodCallExpr n, Object arg) {
+    	n.setCurrentScope(currentScope);
         if (n.getScope() != null) {
             n.getScope().accept(this, arg);
         }
@@ -547,6 +554,10 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
         n.setCurrentScope(currentScope);
         printAnnotations(n.getAnnotations(), arg);
         n.getType().accept(this, arg);
+        for (Iterator<VariableDeclarator> i = n.getVars().iterator(); i.hasNext();) {
+            VariableDeclarator v = i.next();
+            v.accept(this, arg);
+        }
     }
     
 	public void visit(TypeDeclarationStmt n, Object arg) {

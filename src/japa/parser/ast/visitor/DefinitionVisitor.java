@@ -111,6 +111,7 @@ import japa.parser.ast.type.Type;
 import japa.parser.ast.type.VoidType;
 import japa.parser.ast.type.WildcardType;
 import se701.A2SemanticsException;
+import symtab.BuiltInTypeSymbol;
 import symtab.ClassSymbol;
 import symtab.GlobalScope;
 import symtab.MethodSymbol;
@@ -289,12 +290,7 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
         
         String[] types = getBaseTypeAndGenerics(n.getType().toString());
         Symbol symOfVariable = n.getCurrentScope().resolve(types[0]);
-        if(symOfVariable == null){
-        	throw new A2SemanticsException(types[0] + " on line " + n.getType().getBeginLine() + " is not a defined type");
-        }
-        if(!(symOfVariable instanceof symtab.Type)){
-        	throw new A2SemanticsException(types[0] + " on line " + n.getType().getBeginLine() + " is not a valid type");
-        }
+
         for (Iterator<VariableDeclarator> i = n.getVariables().iterator(); i.hasNext();) {
             VariableDeclarator v = i.next();
             v.accept(this, arg);
@@ -542,12 +538,6 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
 
     public void visit(Parameter n, Object arg) {
     	Symbol symOfVariable = n.getCurrentScope().resolve(n.getType().toString());
-        if(symOfVariable == null){
-        	throw new A2SemanticsException(n.getType().toString() + " on line " + n.getType().getBeginLine() + " is not a defined type");
-        }
-        if(!(symOfVariable instanceof symtab.Type)){
-        	throw new A2SemanticsException(n.getType().toString() + " on line " + n.getType().getBeginLine() + " is not a valid type");
-        }
     	n.getCurrentScope().define(new VariableSymbol(n.getId().toString(), (symtab.Type) symOfVariable, 0));
         printAnnotations(n.getAnnotations(), arg);
         n.getType().accept(this, arg);
@@ -579,12 +569,6 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
         //added TODO
         String[] types = getBaseTypeAndGenerics(n.getType().toString());
         Symbol symOfVariable = n.getCurrentScope().resolve(types[0]);
-        if(symOfVariable == null){
-        	throw new A2SemanticsException(types[0] + " on line " + n.getType().getBeginLine() + " is not a defined type");
-        }
-        if(!(symOfVariable instanceof symtab.Type)){
-        	throw new A2SemanticsException(types[0] + " on line " + n.getType().getBeginLine() + " is not a valid type");
-        }
         
         for (Iterator<VariableDeclarator> i = n.getVars().iterator(); i.hasNext();) {
             VariableDeclarator v = i.next();
@@ -594,9 +578,50 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
             	throw new A2SemanticsException(v.getId().toString() + " on line " + v.getId().getBeginLine() + " is already defined. Try another variable name.");
             }
             VariableSymbol varSym = new VariableSymbol(v.getId().getName(), (symtab.Type)symOfVariable, n.getBeginLine());
+            //deal with maps
+            if (varSym.getType() != null && varSym.getType().getName().equals("map")) {
+            	varSym = new VariableSymbol(v.getId().getName(), (symtab.Type)symOfVariable, n.getBeginLine());
+            }
+            //added TODO
+            Expression ex = v.getInit();
+            if (ex instanceof MapLiteralCreationExpr) {
+            	MapLiteralCreationExpr mapEx = (MapLiteralCreationExpr)ex;
+            	Class[] classes = getMapTypeArguments(mapEx);
+            	varSym = new VariableSymbol(v.getId().getName(), new BuiltInTypeSymbol(classes[0].getSimpleName() + "," + classes[1].getSimpleName()), n.getBeginLine());
+            }
             n.getCurrentScope().define(varSym);
         }
     }
+    
+    
+    //added helper method TODO
+    public Class[] getMapTypeArguments(MapLiteralCreationExpr mapEx) {
+    	 Map mapEntries = mapEx.getMapEntries();
+      	 Set<Object> keys = mapEntries.keySet();
+      	 Class[] classes = new Class[2]; 
+      	 Class classOfKey = getBasicClass(mapEx.getKeyClass());
+      	 Class classOfValue = getBasicClass(mapEx.getValueClass());
+         classes[0] = classOfKey;
+         classes[1] = classOfValue;
+         return classes;
+    }
+    
+    //added helper method TODO
+    private Class getBasicClass(Class keyClass) {
+		if (keyClass == IntegerLiteralExpr.class) {
+			return Integer.class;
+		} else if (keyClass == LongLiteralExpr.class) {
+			return Long.class;
+		} else if (keyClass == DoubleLiteralExpr.class) {
+			return Double.class;
+		} else if (keyClass == CharLiteralExpr.class) {
+			return Character.class;
+		} else if (keyClass == BooleanLiteralExpr.class) {
+			return Boolean.class;
+		} else {
+			return String.class;
+		}
+	}
     
     // added TODO
     public boolean isValidFor(symtab.Type typeOfRight, symtab.Type typeOfLeft) {

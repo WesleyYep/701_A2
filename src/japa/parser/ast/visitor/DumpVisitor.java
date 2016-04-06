@@ -1035,7 +1035,8 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         		Map<Object, Object> map =  mapLiteralCreationExpr.getMapEntries();
         		Set<Object> set = map.keySet();
         		for (Object o : set) {
-        			printer.printLn("states.put(" + o + ", " + map.get(o) + ");");
+        			printer.printLn(((VariableDeclarationExpr) n.getExpression()).getVars().get(0).getId().toString()
+        					+ ".put(" + o + ", " + map.get(o) + ");");
         		}
         	}
         }
