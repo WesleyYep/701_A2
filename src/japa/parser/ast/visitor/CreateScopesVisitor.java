@@ -126,7 +126,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author Julio Vilmar Gesser
+ * This visitor creates the scopes for each node
+ * @author Wesley Yep
  */
 
 public final class CreateScopesVisitor implements VoidVisitor<Object> {

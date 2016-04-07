@@ -126,7 +126,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author Julio Vilmar Gesser
+ * @author Wesley Yep
  */
 
 public final class ResolvingVisitor implements VoidVisitor<Object> {
@@ -197,7 +197,6 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(NameExpr n, Object arg) {
-    	//added TODO
     	if (n.getCurrentScope() == null) {
     		return; //if there's no scope, this is probably something like a package declaration
     	}
@@ -312,7 +311,7 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         }
     }
     
-    //added TODO
+    //added this helper method to get the types associated with a declaration of a map
     public String[] getBaseTypeAndGenerics(String type) {
     	String[] array;
     	String regex = "(.*)<(.*)(,(.*))*>";
@@ -323,7 +322,6 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     	} else {
     		array = new String[] {type};
     	}
-    //	return type;
     	return array;
     }
 
@@ -372,8 +370,8 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     public void visit(AssignExpr n, Object arg) {
         n.getTarget().accept(this, arg);
         n.getValue().accept(this, arg);
-        //added TODO
-    	Symbol symOfVariable = n.getTarget().getCurrentScope().resolve(((NameExpr) n.getTarget()).getName());
+
+        Symbol symOfVariable = n.getTarget().getCurrentScope().resolve(((NameExpr) n.getTarget()).getName());
         if(symOfVariable == null){
         	throw new A2SemanticsException(((NameExpr) n.getTarget()).getName() + " on line " + n.getBeginLine() + " has not been defined");
         }
@@ -613,7 +611,6 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         printAnnotations(n.getAnnotations(), arg);
         n.getType().accept(this, arg);
         
-        //added TODO
         String[] types = getBaseTypeAndGenerics(n.getType().toString());
         Symbol symOfVariable = n.getCurrentScope().resolve(types[0]);
         if(symOfVariable == null){
@@ -637,16 +634,28 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         }
     }
     
-    // added TODO
+    /**
+     * This method is used since some types are valid to be used in place of others
+     * for example, int can be used in place of long, double, and char types (but not neccessarily vice versa)
+     * 
+     * @param typeOfRight
+     * @param typeOfLeft
+     * @return
+     */
     public boolean isValidFor(symtab.Type typeOfRight, symtab.Type typeOfLeft) {
     	if (typeOfLeft.getName().equals(typeOfRight.getName()) 
 			|| typeOfRight.getName().equals("null") && typeOfLeft.getName().equals("String")
 			|| typeOfRight.getName().equals("null") && typeOfLeft instanceof ClassSymbol
 			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("long") //ints can count as long
 			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("double") //ints can count as double
+			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("Integer") 
 			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("char") //ints can count as char
 			|| typeOfRight.getName().equals("char") && typeOfLeft.getName().equals("int") //chars can count as int
+			|| typeOfRight.getName().equals("char") && typeOfLeft.getName().equals("Character") 
 			|| typeOfRight.getName().equals("char") && typeOfLeft.getName().equals("double") //chars can count as double
+			|| typeOfRight.getName().equals("long") && typeOfLeft.getName().equals("Long") 
+			|| typeOfRight.getName().equals("double") && typeOfLeft.getName().equals("Double") 
+			|| typeOfRight.getName().equals("boolean") && typeOfLeft.getName().equals("Boolean") 
 			) { 
     			return true;
     	} 
@@ -692,7 +701,7 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     			} else if (init.getClass() == MapLiteralCreationExpr.class) {
     				sym = n.getCurrentScope().resolve("Entry");
     			}
-    			//TODO other primitive types (and others?)
+    			//other primitive types (and others?)
     			else if (init.getClass() == ObjectCreationExpr.class) {
     				String t = ((ObjectCreationExpr) init).getType().getName();
     				sym = n.getCurrentScope().resolve(t);

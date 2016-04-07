@@ -25,21 +25,19 @@ public class A2Compiler {
 		JavaParser parser = new JavaParser(new FileReader(file));
 		CompilationUnit ast = parser.CompilationUnit();
 		
-		// perform visit 1...
-		//SillyBreakVisitor semanticsVisitor = new SillyBreakVisitor();
+		// perform visit 1 - define scopes for nodes
 		CreateScopesVisitor createScopesVisitor = new 		CreateScopesVisitor();
 		ast.accept(createScopesVisitor, null);
 		
+		//Perform visit 2 - define symbols in each scope
 		DefinitionVisitor definitionVisitor = new DefinitionVisitor();
 		ast.accept(definitionVisitor, null);
 		
+		//Perform visit 3 - resolve symbols in each scope
 		ResolvingVisitor resolvingVisitor = new ResolvingVisitor();
 		ast.accept(resolvingVisitor, null);
 		
-		// perform visit 2... etc etc 
-		// ...
-		
-		// perform visit N 
+		// perform visit 4 - Print code to .java file with correct java code for map literals 
 		DumpVisitor printVisitor = new DumpVisitor();
 		ast.accept(printVisitor, null);
 		

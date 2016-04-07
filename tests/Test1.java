@@ -12,6 +12,7 @@ public class Test1 {
         String k = null;
         boolean asd;
         x = false;
+        Integer y = 3;
     }
 
     char b;

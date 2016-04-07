@@ -2,9 +2,10 @@ package symtab;
 
 import java.util.HashMap;
 
+// UNUSED
 public class GlobalScope {//extends BaseScope {
 	
-	private HashMap<String,Symbol> symbols = new HashMap<String,Symbol>();
+//	private HashMap<String,Symbol> symbols = new HashMap<String,Symbol>();
 	
 //	public GlobalScope(){
 //		define(new BuiltInTypeSymbol("int"));

@@ -126,7 +126,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author Julio Vilmar Gesser
+ * @author Wesley Yep
  */
 
 public final class DefinitionVisitor implements VoidVisitor<Object> {
@@ -303,7 +303,7 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
         }
     }
     
-    //added TODO
+    //added this helper method to get the types associated with a declaration of a map
     public String[] getBaseTypeAndGenerics(String type) {
     	String[] array;
     	String regex = "(.*)<(.*)(,(.*))*>";
@@ -566,7 +566,6 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
         printAnnotations(n.getAnnotations(), arg);
         n.getType().accept(this, arg);
         
-        //added TODO
         String[] types = getBaseTypeAndGenerics(n.getType().toString());
         Symbol symOfVariable = n.getCurrentScope().resolve(types[0]);
         
@@ -582,7 +581,6 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
             if (varSym.getType() != null && varSym.getType().getName().equals("map")) {
             	varSym = new VariableSymbol(v.getId().getName(), (symtab.Type)symOfVariable, n.getBeginLine());
             }
-            //added TODO
             Expression ex = v.getInit();
             if (ex instanceof MapLiteralCreationExpr) {
             	MapLiteralCreationExpr mapEx = (MapLiteralCreationExpr)ex;
@@ -594,7 +592,7 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
     }
     
     
-    //added helper method TODO
+    //added helper method to get the type arguments of a map
     public Class[] getMapTypeArguments(MapLiteralCreationExpr mapEx) {
     	 Map<Object, Object> mapEntries = mapEx.getMapEntries();
       	 Set<Object> keys = mapEntries.keySet();
@@ -616,7 +614,7 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
          return classes;
     }
     
-    //added helper method TODO
+    //added helper method to get the standard class that a literal expression represents
     private Class getBasicClass(Class keyClass) {
 		if (keyClass == IntegerLiteralExpr.class) {
 			return Integer.class;
@@ -633,16 +631,28 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
 		}
 	}
     
-    // added TODO
+    /**
+     * This method is used since some types are valid to be used in place of others
+     * for example, int can be used in place of long, double, and char types (but not neccessarily vice versa)
+     * 
+     * @param typeOfRight
+     * @param typeOfLeft
+     * @return
+     */
     public boolean isValidFor(symtab.Type typeOfRight, symtab.Type typeOfLeft) {
     	if (typeOfLeft.getName().equals(typeOfRight.getName()) 
 			|| typeOfRight.getName().equals("null") && typeOfLeft.getName().equals("String")
 			|| typeOfRight.getName().equals("null") && typeOfLeft instanceof ClassSymbol
 			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("long") //ints can count as long
 			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("double") //ints can count as double
+			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("Integer") 
 			|| typeOfRight.getName().equals("int") && typeOfLeft.getName().equals("char") //ints can count as char
 			|| typeOfRight.getName().equals("char") && typeOfLeft.getName().equals("int") //chars can count as int
+			|| typeOfRight.getName().equals("char") && typeOfLeft.getName().equals("Character") 
 			|| typeOfRight.getName().equals("char") && typeOfLeft.getName().equals("double") //chars can count as double
+			|| typeOfRight.getName().equals("long") && typeOfLeft.getName().equals("Long") 
+			|| typeOfRight.getName().equals("double") && typeOfLeft.getName().equals("Double") 
+			|| typeOfRight.getName().equals("boolean") && typeOfLeft.getName().equals("Boolean") 
 			) { 
     			return true;
     	} 

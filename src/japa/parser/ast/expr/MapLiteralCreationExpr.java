@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Julio Vilmar Gesser
+ * @author Wesley Yep
+ * This represents a map literal expression
  */
 public final class MapLiteralCreationExpr extends Expression {
 

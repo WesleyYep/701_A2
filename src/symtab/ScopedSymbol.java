@@ -19,6 +19,11 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 		define(new BuiltInTypeSymbol("double"));
 		define(new BuiltInTypeSymbol("char"));
 		define(new BuiltInTypeSymbol("null"));
+		define(new BuiltInTypeSymbol("Integer"));
+		define(new BuiltInTypeSymbol("Long"));
+		define(new BuiltInTypeSymbol("Character"));
+		define(new BuiltInTypeSymbol("Double"));
+		define(new BuiltInTypeSymbol("Boolean"));
 
 		//map type for feature
 		define(new BuiltInTypeSymbol("Map"));

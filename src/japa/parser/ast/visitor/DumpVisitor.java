@@ -118,6 +118,7 @@ import java.util.Set;
 
 /**
  * @author Julio Vilmar Gesser
+ * Modified by Wesley Yep to convert Map literal to actual java code
  */
 
 public final class DumpVisitor implements VoidVisitor<Object> {
@@ -756,7 +757,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         }
     }
     
-    //added TODO
+    //added visit method for map expression
     public void visit(MapLiteralCreationExpr n, Object arg) {
     	 if (n.getScope() != null) {
              n.getScope().accept(this, arg);
@@ -764,7 +765,6 @@ public final class DumpVisitor implements VoidVisitor<Object> {
          }
          printer.print("new ");
          n.getType().accept(this, arg);
-         //added
      	 printMapTypeArguments(n);
          printer.print("()");
     }
@@ -934,7 +934,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         printer.print(");");
     }
     
-    //added helper method TODO
+    //added helper method to get the type arguments of a map
     public void printMapTypeArguments(MapLiteralCreationExpr mapEx) {
     	 Map mapEntries = mapEx.getMapEntries();
       	 Set<Object> keys = mapEntries.keySet();
@@ -943,7 +943,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
          printTypeArgsForMapLiteral(classOfKey, classOfValue);
     }
 
-    //added helper method TODO
+    //added helper method to get the standard class that a literal expression represents
     private Class getBasicClass(Class keyClass) {
 		if (keyClass == IntegerLiteralExpr.class) {
 			return Integer.class;
@@ -966,7 +966,6 @@ public final class DumpVisitor implements VoidVisitor<Object> {
 
         n.getType().accept(this, arg);
         
-        //added TODO
         Expression ex = n.getVars().get(0).getInit();
         if (ex instanceof MapLiteralCreationExpr) {
         	MapLiteralCreationExpr mapEx = (MapLiteralCreationExpr)ex;
@@ -1025,7 +1024,7 @@ public final class DumpVisitor implements VoidVisitor<Object> {
         n.getExpression().accept(this, arg);
         printer.print(";");
         
-        //print the extra Map.put statements if the expression is a MapLiteral TODO
+        //print the extra Map.put statements if the expression is a MapLiteral
         if (n.getExpression() instanceof VariableDeclarationExpr) {
         	VariableDeclarationExpr variableDeclarationExpr = (VariableDeclarationExpr) n.getExpression();
         	Expression ex = variableDeclarationExpr.getVars().get(0).getInit();
