@@ -596,13 +596,23 @@ public final class DefinitionVisitor implements VoidVisitor<Object> {
     
     //added helper method TODO
     public Class[] getMapTypeArguments(MapLiteralCreationExpr mapEx) {
-    	 Map mapEntries = mapEx.getMapEntries();
+    	 Map<Object, Object> mapEntries = mapEx.getMapEntries();
       	 Set<Object> keys = mapEntries.keySet();
       	 Class[] classes = new Class[2]; 
       	 Class classOfKey = getBasicClass(mapEx.getKeyClass());
       	 Class classOfValue = getBasicClass(mapEx.getValueClass());
          classes[0] = classOfKey;
          classes[1] = classOfValue;
+         //check all keys are same type
+         try {
+	         for (Object k : keys) {
+	        	 if (classOfKey.equals(Integer.class)) {
+	        		 Integer.parseInt(k.toString());
+	        	 }
+	         }
+         } catch (NumberFormatException e) {
+				throw new A2SemanticsException(("Inconsistent types in keys of hashmap on line " + mapEx.getBeginLine()));
+         }
          return classes;
     }
     

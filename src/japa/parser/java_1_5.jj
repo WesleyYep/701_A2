@@ -2346,12 +2346,24 @@ MapLiteralCreationExpr MapLiteral(int line, int column, Expression scope, Type t
 	Map map = new HashMap();
 	String key;
 	Expression keyLit;
+	Expression keyLitCheck;
 	Expression valueLit;
+	Expression valueLitCheck;
 }
 {
 	"{" 
 	(keyLit = Literal() { key = token.image; } ":" valueLit = Literal() { map.put(key, token.image); })
-	 ("," keyLit = Literal() { key = token.image; } ":" valueLit = Literal() { map.put(key, token.image); })* "}"
+	 ("," keyLitCheck = Literal() { 
+	 	key = token.image;
+		if (!keyLitCheck.getClass().equals(keyLit.getClass())) {
+			throw new ParseException(token, "Keys in hashmap must be of same type");
+		}
+ 	 } ":" valueLitCheck = Literal() {
+ 	 	 map.put(key, token.image); 
+ 	 	 if (!valueLitCheck.getClass().equals(valueLit.getClass())) {
+			throw new ParseException(token, "Values in hashmap must be of same type");
+		}
+ 	 })* "}"
 	{ 
 		Class keyClass = keyLit.getClass();		Class valueClass = valueLit.getClass();
 		ret = new MapLiteralCreationExpr(line, column, scope, (ClassOrInterfaceType) type, map, keyClass, valueClass);
