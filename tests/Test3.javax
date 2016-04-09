@@ -10,7 +10,8 @@ public class Test3 {
 	class Dog {
 		int y;
 		public void dogFoo(boolean x) {
-		
+		  //this.a = 'l';
+		  this.x = 'l';
 		}
 		char x;
 	}
@@ -23,8 +24,7 @@ public class Test3 {
 //		Dog s = 1;
 //		Sheep s = new Dog();	
 		int e = 1;
-//		int as = a;
-//		int e = 1; 			// ERROR, already defined
+		int as = a;
 //		String a = "asd"; 	// ERROR, already defined
 //		int f = "";		// ERROR, incompatible type
 		int g = e; 		
@@ -36,6 +36,10 @@ public class Test3 {
 //		int noSuchThing = Map.noSuchMethod();		
 //		char lol = d.a();
 //		d.noSuchMethod();
+//		d.foo(); //ERROR, no such method
+		int cool = d.y; //ERROR, no such field
+//		x = 12;
+		this.a = 5;
 	}
 	
 

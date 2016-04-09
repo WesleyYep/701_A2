@@ -370,10 +370,22 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     public void visit(AssignExpr n, Object arg) {
         n.getTarget().accept(this, arg);
         n.getValue().accept(this, arg);
-
-        Symbol symOfVariable = n.getTarget().getCurrentScope().resolve(((NameExpr) n.getTarget()).getName());
+        Symbol symOfVariable = null;
+        String name = "";
+        
+        if (n.getTarget() instanceof NameExpr) {
+        	name = ((NameExpr) n.getTarget()).getName();
+        	symOfVariable = n.getTarget().getCurrentScope().resolve(name);
+        } else {
+        	name = ((FieldAccessExpr) n.getTarget()).getField();
+        	if (((FieldAccessExpr) n.getTarget()).getScope() instanceof ThisExpr) {
+            	symOfVariable = n.getTarget().getCurrentScope().getEnclosingScope().getEnclosingScope().resolveMember(name); //eg this.x  - call resolveMember on class    		
+        	} else {
+        		symOfVariable = n.getTarget().getCurrentScope().resolve(name);
+        	}
+        }
         if(symOfVariable == null){
-        	throw new A2SemanticsException(((NameExpr) n.getTarget()).getName() + " on line " + n.getBeginLine() + " has not been defined");
+        	throw new A2SemanticsException(name + " on line " + n.getBeginLine() + " has not been defined");
         }
     	symtab.Type typeOfLeft = symOfVariable.getType();
     	symtab.Type typeOfRight = getTypeOfExpression(n, n.getValue());
@@ -478,9 +490,14 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         	className = n.getCurrentScope();
         }
         if (className != null) {
-			Symbol sym = className.resolve(n.getName());
+			Symbol sym;
+			if (n.getScope() != null) {
+				sym = className.resolveMember(n.getName());
+			} else {
+				sym = className.resolve(n.getName());
+			}
 			if(sym == null){
-				throw new A2SemanticsException(n.getName() + "() is not defined on line " + n.getBeginLine());
+ 				throw new A2SemanticsException(n.getName() + "() is not defined on line " + n.getBeginLine());
 			} else if (sym instanceof VariableSymbol) {
 				throw new A2SemanticsException(n.getName()+ " is a variable but used as a method on line " + n.getBeginLine());
 			}
@@ -716,7 +733,7 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
         				throw new A2SemanticsException(t + " is not defined on line " + init.getBeginLine());
         			}
         			Scope sss = (Scope)sym.getType();
-        			sym = sss.resolve(((FieldAccessExpr) init).getField());
+        			sym = sss.resolveMember(((FieldAccessExpr) init).getField());
         			if(sym == null){
         				throw new A2SemanticsException(((FieldAccessExpr) init).getField() + " is not defined on line " + init.getBeginLine());
         			} else if (sym instanceof MethodSymbol) {

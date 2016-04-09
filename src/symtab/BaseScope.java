@@ -66,4 +66,17 @@ public abstract class BaseScope implements Scope {
 		// otherwise it doesn't exist
 		return null;
 	}
+	
+	@Override
+	public Symbol resolveMember(String name) {
+		// if the symbol exists in the current scope, return it
+		Symbol s = symbols.get(name);
+		if (s != null)
+			return s;
+		
+		// don't look in the enclosing scope for this one
+		
+		// otherwise it doesn't exist
+		return null;
+	}
 }

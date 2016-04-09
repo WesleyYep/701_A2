@@ -9,6 +9,7 @@ public class Test3 {
         int y;
 
         public void dogFoo(boolean x) {
+            this.x = 'l';
         }
 
         char x;
@@ -17,9 +18,12 @@ public class Test3 {
     public void foo(boolean x) {
         Dog d = new Dog();
         int e = 1;
+        int as = a;
         int g = e;
         boolean xx = false;
         int doga = d.y;
         int f = d.dogFoo();
+        int cool = d.y;
+        this.a = 5;
     }
 }

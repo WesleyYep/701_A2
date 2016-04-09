@@ -374,6 +374,7 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
     }
 
     public void visit(FieldAccessExpr n, Object arg) {
+    	n.setCurrentScope(currentScope);
         n.getScope().accept(this, arg);
     }
 
