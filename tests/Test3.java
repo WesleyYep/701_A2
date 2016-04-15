@@ -25,5 +25,6 @@ public class Test3 {
         int f = d.dogFoo();
         int cool = d.y;
         this.a = 5;
+        xx = x;
     }
 }

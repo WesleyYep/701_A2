@@ -14,6 +14,11 @@ import japa.parser.ast.visitor.DumpVisitor;
 import japa.parser.ast.visitor.ResolvingVisitor;
 import japa.parser.ast.visitor.DefinitionVisitor;
 
+/**
+ * Compiler class
+ * @author Wesley
+ *
+ */
 public class A2Compiler {
 	
 	/*
@@ -26,7 +31,7 @@ public class A2Compiler {
 		CompilationUnit ast = parser.CompilationUnit();
 		
 		// perform visit 1 - define scopes for nodes
-		CreateScopesVisitor createScopesVisitor = new 		CreateScopesVisitor();
+		CreateScopesVisitor createScopesVisitor = new CreateScopesVisitor();
 		ast.accept(createScopesVisitor, null);
 		
 		//Perform visit 2 - define symbols in each scope
