@@ -457,6 +457,7 @@ public final class CreateScopesVisitor implements VoidVisitor<Object> {
     }
     
     public void visit(MapLiteralCreationExpr n, Object arg) {
+    	n.setCurrentScope(currentScope);
     	 if (n.getScope() != null) {
              n.getScope().accept(this, arg);
          }

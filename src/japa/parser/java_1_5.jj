@@ -44,6 +44,7 @@ import japa.parser.ast.type.*;
  * Grammar to parse Java version 1.5
  * @author Sreenivasa Viswanadha - Simplified and enhanced for 1.5
  * @author J�lio Vilmar Gesser (jgesser@gmail.com) - bug fixes and added AST generation
+ * Modified by Wesley Yep - addition of Map Literals
  */
 public final class JavaParser {
 
@@ -2333,7 +2334,6 @@ Expression AllocationExpression(Expression scope):
 	      { ret = new ObjectCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, args, anonymousBody); }
       	| //added this
 	      ret = MapLiteral(line, column, scope, type)
-	      //{ ret = new MapLiteralCreationExpr(line, column, scope, (ClassOrInterfaceType) type, typeArgs, null, mapEntries); }
 	    )
   )
   { return ret; }

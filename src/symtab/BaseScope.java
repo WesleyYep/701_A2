@@ -12,20 +12,25 @@ public abstract class BaseScope implements Scope {
 	public BaseScope(Scope enclosingScope) {
 		this.enclosingScope = enclosingScope;
 		define(new BuiltInTypeSymbol("int"));
-		define(new BuiltInTypeSymbol("String"));
+		define(new ClassSymbol("String"));
 		define(new BuiltInTypeSymbol("boolean"));
 		define(new BuiltInTypeSymbol("long"));
 		define(new BuiltInTypeSymbol("double"));
 		define(new BuiltInTypeSymbol("char"));
 		define(new BuiltInTypeSymbol("null"));
-
+		
 		//map type for feature
-		define(new BuiltInTypeSymbol("Map"));
-		define(new BuiltInTypeSymbol("Entry"));
-		define(new BuiltInTypeSymbol("System"));
-		define(new BuiltInTypeSymbol("System.out"));
-		define(new BuiltInTypeSymbol("String[]"));
-
+		ClassSymbol entry = new ClassSymbol("Entry", true);
+		entry.define(new MethodSymbol("getKey", entry, true));
+		entry.define(new MethodSymbol("getValue", entry, true));
+		define(entry);
+		
+		ClassSymbol system = new ClassSymbol("System", true);
+		define(system);
+		
+		define(new ClassSymbol("String[]", true));
+		define(new ClassSymbol("Map", true));
+		define(new ClassSymbol("HashMap", true));
 	}
 	
 	@Override

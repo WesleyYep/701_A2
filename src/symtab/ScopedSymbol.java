@@ -10,27 +10,40 @@ public abstract class ScopedSymbol extends Symbol implements Scope {
 	protected Scope enclosingScope = null;
 	
 	public ScopedSymbol(String name, Scope enclosingScope) {
-		super(name, null, 0); //scoped symbols are valid anywhere in the scope
+		super(name, null, 0); 
 		this.enclosingScope = enclosingScope;
 		define(new BuiltInTypeSymbol("int"));
-		define(new BuiltInTypeSymbol("String"));
 		define(new BuiltInTypeSymbol("boolean"));
 		define(new BuiltInTypeSymbol("long"));
 		define(new BuiltInTypeSymbol("double"));
 		define(new BuiltInTypeSymbol("char"));
 		define(new BuiltInTypeSymbol("null"));
-		define(new BuiltInTypeSymbol("Integer"));
-		define(new BuiltInTypeSymbol("Long"));
-		define(new BuiltInTypeSymbol("Character"));
-		define(new BuiltInTypeSymbol("Double"));
-		define(new BuiltInTypeSymbol("Boolean"));
+		
+		define(new ClassSymbol("String", true));
+		define(new ClassSymbol("Integer", true));
+		define(new ClassSymbol("Long", true));
+		define(new ClassSymbol("Character", true));
+		define(new ClassSymbol("Double", true));
+		define(new ClassSymbol("Boolean", true));
 
 		//map type for feature
-		define(new BuiltInTypeSymbol("Map"));
-		define(new BuiltInTypeSymbol("Entry"));
-		define(new BuiltInTypeSymbol("System"));
-		define(new BuiltInTypeSymbol("System.out"));
-		define(new BuiltInTypeSymbol("String[]"));
+		ClassSymbol entry = new ClassSymbol("Entry", true);
+		entry.define(new MethodSymbol("getKey", entry, true));
+		entry.define(new MethodSymbol("getValue", entry, true));
+		define(entry);
+		
+		ClassSymbol system = new ClassSymbol("System.out", true);
+		system.define(new ClassSymbol("println", true));
+		define(system);
+		
+		define(new ClassSymbol("String[]", true));
+		define(new ClassSymbol("Map", true));
+		define(new ClassSymbol("HashMap", true));
+	}
+	
+	public ScopedSymbol(String name, Scope enclosingScope, boolean defaultClass) {
+		super(name, null, 0);
+		this.enclosingScope = enclosingScope;
 	}
 	
 	@Override

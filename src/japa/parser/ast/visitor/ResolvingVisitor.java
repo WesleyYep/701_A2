@@ -534,6 +534,10 @@ public final class ResolvingVisitor implements VoidVisitor<Object> {
     	 if (n.getScope() != null) {
              n.getScope().accept(this, arg);
          }
+    	 Symbol sym = n.getCurrentScope().resolve(n.getType().getName());
+    	 if (sym == null) {
+         	throw new A2SemanticsException(n.getType().getName() + " on line " + n.getType().getBeginLine() + " is not a valid Map type - try HashMap");
+    	 }
          n.getType().accept(this, arg);
     }
 
